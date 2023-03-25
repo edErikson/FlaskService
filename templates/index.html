@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Translation Service</title>
+  </head>
+  <body>
+    <h1>Translation App</h1>
+    <form method="POST">
+      <label for="word">Word:</label>
+      <input type="text" id="word" name="word"><br>
+      <p>Total Words: {{ word_count }}</p>
+      <br>
+      <button type="submit" class="btn btn-primary">Translate!</button>
+    </form>
+    <br>
+    {% if translation %}
+      {% if translation is string %}
+        {{ translation }}
+      {% else %}
+        <label for="word">Translations: {{ word }}</label>
+        <br>
+        {% for lang in languages %}
+        {% if lang in translation %}
+        <strong>{{ lang }}:</strong> {{ translation[lang] }}<br>
+        {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endif %}
+  </body>
+</html>
+
