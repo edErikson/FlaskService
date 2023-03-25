@@ -60,7 +60,7 @@ def index():
     word_count = get_word_count()
 
     if request.method == 'POST':
-        word = request.form.get('word')
+        word = request.form.get('word').lower()
         if word:
             translation = get_translations(word)
             return render_template("index.html", translation=translation, word=word, languages=languages, word_count=word_count)
