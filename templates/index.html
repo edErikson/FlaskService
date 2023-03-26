@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
-    <h1>Translation Service</h1>
+    <h1>Translation App</h1>
     <form method="POST">
       <label for="word">Word:</label>
       <input type="text" id="word" name="word"><br>
@@ -19,7 +19,7 @@
         {{ translation }}
       {% else %}
         <div class="translation-output">
-          <label class="standard_label" for="word">Translations for "{{ word }}"</label>
+          <label for="word">Translations for "{{ word }}"</label>
           <br>
           {% for lang in languages %}
             {% if lang in translation %}
