@@ -8,7 +8,7 @@ DB_PATH = os.path.join(BASE_DIR, 'data', 'mydatabase.db')
 
 app = Flask(__name__)
 api = Api(app)
-app._static_folder = 'templates/static/css'
+app._static_folder = 'static/css'
 
 def query_database(query, params=()):
     with sqlite3.connect(DB_PATH) as conn:

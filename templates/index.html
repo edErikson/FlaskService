@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Translation Service</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
     <h1>Translation App</h1>
@@ -18,15 +18,19 @@
       {% if translation is string %}
         {{ translation }}
       {% else %}
-        <label for="word">Translations: {{ word }}</label>
-        <br>
-        {% for lang in languages %}
-        {% if lang in translation %}
-        <strong>{{ lang }}:</strong> {{ translation[lang] }}<br>
-        {% endif %}
-        {% endfor %}
+        <div class="translation-output">
+          <label for="word">Translations for "{{ word }}":</label>
+          <br>
+          {% for lang in languages %}
+            {% if lang in translation %}
+              <div class="translation">
+                <span class="translation-lang">{{ lang }}:</span>
+                <span class="translation-text">{{ translation[lang] }}</span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
       {% endif %}
     {% endif %}
   </body>
 </html>
-
