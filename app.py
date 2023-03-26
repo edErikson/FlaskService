@@ -45,7 +45,7 @@ class Translation(Resource):
         word = request.args.get('word')
         translations = get_translations(word)
         if isinstance(translations, str):
-            return {"message": translations}
+            return {"message": translations.lower()}
         else:
             return translations
 
