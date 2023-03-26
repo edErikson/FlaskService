@@ -43,9 +43,10 @@ def get_translations(word):
 class Translation(Resource):
     def get(self):
         word = request.args.get('word')
+        word = word.lower()
         translations = get_translations(word)
         if isinstance(translations, str):
-            return {"message": translations.lower()}
+            return {"message": translations}
         else:
             return translations
 
