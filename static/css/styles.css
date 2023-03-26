@@ -1,13 +1,16 @@
+/* Center align the heading */
 h1 {
   text-align: center;
 }
 
+/* Center align the form and give it a fixed width */
 form {
   margin: 0 auto;
   width: 50%;
   text-align: center;
 }
 
+/* Style the label and input */
 form label {
   display: inline-block;
   width: 50px;
@@ -18,25 +21,39 @@ form input[type="text"] {
   width: 200px;
 }
 
+/* Center align the word count */
 form p {
   text-align: center;
 }
 
+/* Style the submit button */
 form button {
   margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
+/* Style the translation output container */
 .translation-output {
   margin: 0 auto;
   width: 50%;
+  text-align: center;
 }
 
+/* Style each translation */
 .translation {
   margin-bottom: 10px;
+  text-align: center;
 }
 
+/* Style the language and translation text */
 .translation-lang {
   font-weight: bold;
+  text-transform: capitalize;
 }
 
 .translation-text {
