@@ -3,21 +3,22 @@
   <head>
     <title>Translation Service</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   </head>
   <body>
     <h1>Translation App</h1>
-    <form method="POST">
-      <label for="word">Word:</label>
-      <input type="text" id="word" name="word"><br>
+
+    <div class="database-words">
       <p>Total Words: {{ word_count }}</p>
       <br>
-      <button type="submit" class="btn btn-primary">Translate!</button>
-    </form>
+      <select id="word-dropdown" name="word" class="select2" onchange="getTranslation()">
+        <option value=""></option>
+      </select>
+    </div>
+
     <br>
-    {% if translation %}
-      {% if translation is string %}
-        {{ translation }}
-      {% else %}
         <div class="translation-output">
           <label for="word">Translations for "{{ word }}"</label>
           <br>
@@ -30,7 +31,53 @@
             {% endif %}
           {% endfor %}
         </div>
-      {% endif %}
-    {% endif %}
+    <br>
+
+       <script>
+        $(document).ready(function() {
+        // Trigger the AJAX request to load the word list
+        $.ajax({
+          url: '/word_list',
+          dataType: 'json',
+          success: function(data) {
+            // Populate the dropdown with the list of words
+            $('#word-dropdown').select2({
+              data: $.map(data, function (word) {
+                return { id: word, text: word };
+              })
+            });
+          },
+          cache: true
+        });
+      });
+
+function getTranslation() {
+  var selectedWord = $("#word-dropdown").val();
+  if (selectedWord) {
+    $.ajax({
+      url: '/translate',
+      data: {word: selectedWord},
+      dataType: 'json',
+      success: function(data) {
+        if (data.message) {
+          $(".translation-output").html(data.message);
+        } else {
+          var translations = data;
+          var output = "";
+          for (var lang in translations) {
+            output += "<div class='translation'>";
+            output += "<span class='translation-lang'>" + lang + ":</span>";
+            output += "<span class='translation-text'>" + translations[lang] + "</span>";
+            output += "</div>";
+          }
+          $(".translation-output").html(output);
+        }
+      }
+    });
+  }
+}
+
+
+      </script>
   </body>
 </html>

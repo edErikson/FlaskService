@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from flask_restful import Api, Resource
 import os
 import sqlite3
@@ -36,14 +36,14 @@ def get_translations(word):
     if results:
         translations = {lang: text for lang, text in results}
     else:
-        translations = f"No translation for '{word}' found."
+        text = 'no data'
+        translations = {lang: text for lang, text in results}
     return translations
 
 
 class Translation(Resource):
     def get(self):
         word = request.args.get('word')
-        word = word.lower()
         translations = get_translations(word)
         if isinstance(translations, str):
             return {"message": translations}
@@ -54,6 +54,15 @@ class Translation(Resource):
 api.add_resource(Translation, '/translate')
 
 
+class AllWords(Resource):
+    def get(self):
+        results = query_database("SELECT DISTINCT word FROM translations")
+        words = [word[0] for word in results]
+        return words
+
+
+api.add_resource(AllWords, '/words')
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     translation = {}
@@ -61,13 +70,27 @@ def index():
     word_count = get_word_count()
 
     if request.method == 'POST':
-        word = request.form.get('word').lower().strip()
+        word = request.form.get('word')
         if word:
             translation = get_translations(word)
             return render_template("index.html", translation=translation, word=word, languages=languages, word_count=word_count)
 
+    if request.method == 'GET':
+        word = request.args.get('word')
+        if word:
+            translation = get_translations(word)
+            return jsonify(translation)
+
     return render_template("index.html", translation=translation, languages=languages, word_count=word_count)
 
+@app.route('/word_list')
+def word_list():
+    with sqlite3.connect(DB_PATH) as conn:
+        cur = conn.cursor()
+        cur.execute('SELECT DISTINCT word FROM translations ORDER BY word ASC')
+        results = cur.fetchall()
+        words = [row[0] for row in results]
+        return jsonify(words)
 
 if __name__ == '__main__':
     app.run(debug=True)
