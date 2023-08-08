@@ -60,7 +60,4 @@ Now, navigate to `http://127.0.0.1:5000/` in your browser to access the web inte
 - **Get all words**:
     - Endpoint: `/words`
     - Method: `GET`
-
-## License
-
-MIT
+    - 
