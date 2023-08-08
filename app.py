@@ -10,6 +10,7 @@ app = Flask(__name__)
 api = Api(app)
 app._static_folder = 'static/css'
 
+
 def query_database(query, params=()):
     with sqlite3.connect(DB_PATH) as conn:
         cur = conn.cursor()
@@ -33,16 +34,13 @@ def get_word_count():
 
 def get_translations(word):
     results = query_database("SELECT lang, translation FROM translations WHERE word = ?", (word,))
-    if results:
-        translations = {lang: text for lang, text in results}
-    else:
-        text = 'no data'
-        translations = {lang: text for lang, text in results}
+    translations = {lang: text for lang, text in results}
     return translations
 
 
 class Translation(Resource):
-    def get(self):
+    @staticmethod
+    def get():
         word = request.args.get('word')
         translations = get_translations(word)
         if isinstance(translations, str):
@@ -55,13 +53,15 @@ api.add_resource(Translation, '/translate')
 
 
 class AllWords(Resource):
-    def get(self):
+    @staticmethod
+    def get():
         results = query_database("SELECT DISTINCT word FROM translations")
         words = [word[0] for word in results]
         return words
 
 
 api.add_resource(AllWords, '/words')
+
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -73,7 +73,8 @@ def index():
         word = request.form.get('word')
         if word:
             translation = get_translations(word)
-            return render_template("index.html", translation=translation, word=word, languages=languages, word_count=word_count)
+            return render_template("index.html", translation=translation,
+                                   word=word, languages=languages, word_count=word_count)
 
     if request.method == 'GET':
         word = request.args.get('word')
@@ -83,6 +84,7 @@ def index():
 
     return render_template("index.html", translation=translation, languages=languages, word_count=word_count)
 
+
 @app.route('/word_list')
 def word_list():
     with sqlite3.connect(DB_PATH) as conn:
@@ -91,6 +93,7 @@ def word_list():
         results = cur.fetchall()
         words = [row[0] for row in results]
         return jsonify(words)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
